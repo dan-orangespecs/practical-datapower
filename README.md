@@ -2,14 +2,16 @@
 
 Practical DataPower is a set of articles on introducing immediate productivity into the IBM DataPower Gateway environment. 
 
-More information on the series can be found at http://www.orangespecs.com/datapower-stub-service/
+More information on the series can be found at Orange Specs Consulting: http://www.orangespecs.com/
 
 ## IBM DataPower Gateway Stub Service
 
 This is an implementation of a stub service for the IBM DataPower Gateway appliance. It returns
 pre-canned responses to request messages. This is useful when the project has a dependency on 
 a service that has isn't own internal development schedule and is not ready to consume messages. In 
-lieu of the real service, point the client to the stub and have the stub return a valid response. 
+lieu of the real service, point the client to the stub and have the stub return a valid response.
+
+More information on the stub service can be found at http://www.orangespecs.com/datapower-stub-service/ 
 
 ### Installation
 
