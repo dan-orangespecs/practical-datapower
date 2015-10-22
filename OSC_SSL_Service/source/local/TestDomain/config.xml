@@ -1,0 +1,14 @@
+<Services>
+	<Service env="DEV" URL="/dp/TestDomain">
+		<allow issuer="self-signed">
+			<DN>/C=CA/ST=Ontario/L=Toronto/O=Orange Specs Incorporated/OU=Consulting/CN=client-1</DN>
+		</allow>
+		<allow issuer="VeriSign">
+			<CN>client-1</CN>
+		</allow>
+		<endpoint>
+			<targetURL>https://crackers.whatever.com/someuri</targetURL>
+			<sslProfile></sslProfile>
+		</endpoint>
+	</Service>
+</Services>
