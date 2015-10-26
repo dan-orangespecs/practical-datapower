@@ -5,6 +5,6 @@
 	extension-element-prefixes="dp"
 	exclude-result-prefixes="dp str">
 	
-	<xsl:template name="getCurrentEnvironment">IST</xsl:template>
+	<xsl:template name="getCurrentEnvironment">DEV</xsl:template>
 	
 </xsl:stylesheet>

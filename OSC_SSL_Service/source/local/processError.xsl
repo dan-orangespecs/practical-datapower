@@ -2,7 +2,7 @@
 	@author: Dan Zrobok
 	@company: Orange Specs Consulting (www.orangespecs.com)
 	
-	This stylesheet returns an error response (XML or JSON) dependent on the type of stub requested. 
+	This stylesheet returns an error response (XML or JSON) dependent on the Content-Type of the original request. 
 	
 	Copyright (c) 2015, Dan Zrobok, Orange Specs Consulting Inc, http://orangespecs.com
 
@@ -19,24 +19,37 @@
 	OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  -->
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:dp="http://www.datapower.com/extensions" extension-element-prefixes="dp">
+
+	<xsl:include href="./environment.xsl"/>
+
+    <xsl:variable name="orig_content_type" select="dp:variable('var://service/original-content-type')"/>
+	<xsl:variable name="dp_env">
+		<xsl:call-template name="getCurrentEnvironment"/>
+	</xsl:variable>	
+	
+	<xsl:variable name="error_msg">
+		<xsl:choose>
+			<xsl:when test="not($dp_env = 'PROD') and dp:variable('var://service/error-subcode') = '0x01d30002'"><xsl:value-of select="dp:variable('var://service/error-message')"/> [<xsl:value-of select="dp:variable('var://service/error-code')"/>-<xsl:value-of select="dp:variable('var://service/error-subcode')"/>]</xsl:when>
+			<xsl:when test="not($dp_env = 'PROD')">Error connecting to URL '<xsl:value-of select="dp:variable('var://service/URL-out')"/>: '<xsl:value-of select="dp:variable('var://service/error-message') "/>' [<xsl:value-of select="dp:variable('var://service/error-code')"/>-<xsl:value-of select="dp:variable('var://service/error-subcode')"/>]</xsl:when>
+			<xsl:otherwise>This request could not be completed.</xsl:otherwise>
+		</xsl:choose>
+	</xsl:variable>
+
     <xsl:template match="/">
-
-        <xsl:variable name="content-type" select="dp:variable('var://service/original-content-type')"/>
-
         <xsl:choose>
-            <xsl:when test="contains($content-type,'json')">
-                <json:object xmlns:json="http://www.ibm.com/xmlns/prod/2009/jsonx">
-                    <json:string name="error" xmlns:json="http://www.ibm.com/xmlns/prod/2009/jsonx">
-                        <xsl:value-of select="dp:variable('var://service/error-message')"/>
-                    </json:string>
-                </json:object>
-            </xsl:when>
+            <xsl:when test="contains($orig_content_type,'json')">
+          	    <json:object xmlns:json="http://www.ibm.com/xmlns/prod/2009/jsonx">
+          			 <json:string name="error" xmlns:json="http://www.ibm.com/xmlns/prod/2009/jsonx">
+           	    		 <xsl:value-of select="$error_msg"/>
+					</json:string>
+                </json:object>   
+           </xsl:when>
             <xsl:otherwise>
-                <error>
-                    <xsl:value-of select="dp:variable('var://service/error-message')"/>
+				<error>
+                	<xsl:value-of select="$error_msg"/>
                 </error>
             </xsl:otherwise>
         </xsl:choose>
-
     </xsl:template>
+    
 </xsl:stylesheet>

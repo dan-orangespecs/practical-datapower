@@ -11,9 +11,9 @@
       <port>8888</port>
     </endpoint>
   </Service>
-  <Service env="IST" URL="/dp/TestDomain">
+  <Service env="IST" URL="dp/TestDomain">
     <allow issuer="self-signed">
-      <CN>client-1</CN>
+      <CN>client-2</CN>
     </allow>
     <endpoint>
       <hostname>localhost</hostname>
