@@ -18,9 +18,6 @@
 	<xsl:variable name="dp_env">
 		<xsl:call-template name="getCurrentEnvironment"/>
 	</xsl:variable>
-
-	<xsl:variable name="lowercase" select="'abcdefghijklmnopqrstuvwxyz'" />
-    <xsl:variable name="uppercase" select="'ABCDEFGHIJKLMNOPQRSTUVWXYZ'" />
 	
 	<xsl:template match="/">
 	
