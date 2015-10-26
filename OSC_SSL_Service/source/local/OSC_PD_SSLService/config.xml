@@ -1,5 +1,5 @@
 <Services>
-  <Service env="DEV" URL="/dp/TestDomain">
+  <Service env="DEV" URL="/dp/OSC_PD_SSLService">
     <allow issuer="self-signed">
       <DN>/C=CA/ST=Ontario/L=Toronto/O=Orange Specs Incorporated/OU=Consulting/CN=client-1</DN>
     </allow>
@@ -11,7 +11,7 @@
       <port>8888</port>
     </endpoint>
   </Service>
-  <Service env="IST" URL="dp/TestDomain">
+  <Service env="IST" URL="/dp/OSC_PD_SSLService">
     <allow issuer="self-signed">
       <CN>client-2</CN>
     </allow>

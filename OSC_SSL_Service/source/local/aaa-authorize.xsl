@@ -24,8 +24,7 @@ Incoming URIs follow the format /dp/<config_id>/[optional:<serviceName>]/.../
 
 	<xsl:template match="/">
 	
-		<!--  <xsl:variable name="tid" select="dp:variable('var://service/transaction-id')"/>-->
-		<xsl:variable name="tid" select="'12345'"/>
+		<xsl:variable name="tid" select="dp:variable('var://service/transaction-id')"/>
 	
 		<xsl:variable name="req_uri" select="/container/mapped-resource/resource/item[@type = 'original-url']/text()"/>
 		<xsl:variable name="req_uri_components" select="str:tokenize($req_uri,'/')"/>
@@ -36,6 +35,7 @@ Incoming URIs follow the format /dp/<config_id>/[optional:<serviceName>]/.../
 		<xsl:variable name="config_file_xml" select="document($config_file_path)"/>
 		
 		<xsl:variable name="client_dn" select="/container/identity/entry[@type='client-ssl']/dn/text()"/>
+		
 		<xsl:variable name="client_cn">
 			<xsl:for-each select="str:tokenize($client_dn, '/')">
 				<xsl:if test="starts-with(., 'CN=')">
@@ -65,10 +65,11 @@ Incoming URIs follow the format /dp/<config_id>/[optional:<serviceName>]/.../
 	CN                 : <xsl:value-of select="$client_cn"/>
 	Issuer DN          : <xsl:value-of select="$client_issuer_dn"/>
 	Issuer ID          : <xsl:value-of select="$client_issuer_id"/>
+	URI Components	   : <xsl:value-of select="count($req_uri_components)"/>
 ===
 		</xsl:message>
 		
-		<xsl:variable name="domain_uri" select="concat('/',$req_uri_components[1],'/', $req_uri_components[2])"/>
+		<xsl:variable name="generic_config_uri" select="concat('/',$req_uri_components[1],'/', $req_uri_components[2])"/>
 		
 		<xsl:variable name="fullURIStatusCode">
 			<xsl:call-template name="getMatchStatusCode">
@@ -82,11 +83,11 @@ Incoming URIs follow the format /dp/<config_id>/[optional:<serviceName>]/.../
 			</xsl:call-template>	
 		</xsl:variable>
 		
-		<xsl:variable name="domainLevelURIStatusCode">
+		<xsl:variable name="genericURIStatusCode">
 			<xsl:call-template name="getMatchStatusCode">
 				<xsl:with-param name="env" select="$dp_env"/>
 				<xsl:with-param name="config_xml" select="$config_file_xml"/>
-				<xsl:with-param name="uri" select="$domain_uri"/>
+				<xsl:with-param name="uri" select="$generic_config_uri"/>
 				<xsl:with-param name="dn" select="$client_dn"/>
 				<xsl:with-param name="cn" select="$client_cn"/>
 				<xsl:with-param name="issuer_id" select="$client_issuer_id"/>
@@ -97,12 +98,13 @@ Incoming URIs follow the format /dp/<config_id>/[optional:<serviceName>]/.../
 		<xsl:variable name="statusCode">
 			<xsl:choose>
 				<xsl:when test="string-length($client_dn) = 0">400</xsl:when>
+				<xsl:when test="(count($req_uri_components) &lt; 2) or not($req_uri_components[1] = 'dp')">400.1</xsl:when>
 				<xsl:when test="not($config_file_xml)">500</xsl:when>
-				<xsl:when test="$fullURIStatusCode = 200   or $domainLevelURIStatusCode = 200">200</xsl:when>
-				<xsl:when test="$fullURIStatusCode = 403   or $domainLevelURIStatusCode = 403">403</xsl:when>
-				<xsl:when test="$fullURIStatusCode = 404.3   or $domainLevelURIStatusCode = 404.3">404.3</xsl:when>
-				<xsl:when test="$fullURIStatusCode = 404.2 or $domainLevelURIStatusCode = 404.2">404.2</xsl:when>
-   				<xsl:when test="$fullURIStatusCode = 404.1 or $domainLevelURIStatusCode = 404.1">404.1</xsl:when>
+				<xsl:when test="$fullURIStatusCode = 200   or $genericURIStatusCode = 200">200</xsl:when>
+				<xsl:when test="$fullURIStatusCode = 403   or $genericURIStatusCode = 403">403</xsl:when>
+				<xsl:when test="$fullURIStatusCode = 404.3 or $genericURIStatusCode = 404.3">404.3</xsl:when>
+				<xsl:when test="$fullURIStatusCode = 404.2 or $genericURIStatusCode = 404.2">404.2</xsl:when>
+   				<xsl:when test="$fullURIStatusCode = 404.1 or $genericURIStatusCode = 404.1">404.1</xsl:when>
 				<xsl:otherwise>500</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
@@ -111,7 +113,8 @@ Incoming URIs follow the format /dp/<config_id>/[optional:<serviceName>]/.../
 			<xsl:choose>
 				<xsl:when test="$statusCode = 500">DataPower configuration file '<xsl:value-of select="$config_file_path"/>' not found.</xsl:when>
 				<xsl:when test="$statusCode = 400">Client did not present a certificate</xsl:when>
-				<xsl:when test="$statusCode = 404.1">No configuration found for URI '<xsl:value-of select="$req_uri"/>' or '<xsl:value-of select="$domain_uri"/>' found in configuration file '<xsl:value-of select="$config_file_path"/>'</xsl:when>
+				<xsl:when test="$statusCode = 400.1">Client's request URI '<xsl:value-of select="$req_uri"/>' does not follow platform standard of '/dp/*'</xsl:when>
+				<xsl:when test="$statusCode = 404.1">No configuration found for URI '<xsl:value-of select="$req_uri"/>' or '<xsl:value-of select="$generic_config_uri"/>' found in configuration file '<xsl:value-of select="$config_file_path"/>'</xsl:when>
 				<xsl:when test="$statusCode = 404.2">No '<xsl:value-of select="$dp_env"/>' environment defined for URI '<xsl:value-of select="$req_uri"/>' in configuration file '<xsl:value-of select="$config_file_path"/>'</xsl:when>
 				<xsl:when test="$statusCode = 404.3">No Match for certificate signer '<xsl:value-of select="$client_issuer_id"/>' in '<xsl:value-of select="$dp_env"/>' environment for URI '<xsl:value-of select="$req_uri"/>' in configuration file '<xsl:value-of select="$config_file_path"/>'  </xsl:when>
 				<xsl:when test="$statusCode = 403">No match for client certificate '<xsl:value-of select="$client_dn"/>' issued by '<xsl:value-of select="$client_issuer_id"/>' in '<xsl:value-of select="$dp_env"/>' environment for URI '<xsl:value-of select="$req_uri"/>' in configuration file '<xsl:value-of select="$config_file_path"/>'</xsl:when>
@@ -124,7 +127,7 @@ Incoming URIs follow the format /dp/<config_id>/[optional:<serviceName>]/.../
 === SSL Service - result
 	TID         : <xsl:value-of select="$tid"/>
 	Status Code : <xsl:value-of select="$statusCode"/>
-	Status Msg  : <xsl:value-of select="$statusMessage"/>
+	Message     : <xsl:value-of select="$statusMessage"/>
 ===
 		</xsl:message>
 		
@@ -155,7 +158,7 @@ Incoming URIs follow the format /dp/<config_id>/[optional:<serviceName>]/.../
 	</xsl:template>
 	
 	<!-- 
-		Compares a URL to the whitelist for a CN and DN and returns a code. 200 for success, 404 for no match and 500 for an error. 
+		Compares a URL to the whitelist for a CN and DN and returns a code. 200 for success, other codes for various scenarios. 
 	 -->
 	<xsl:template name="getMatchStatusCode">
 		<xsl:param name="env"/>
@@ -174,8 +177,6 @@ Incoming URIs follow the format /dp/<config_id>/[optional:<serviceName>]/.../
 		
 		<xsl:variable name="dn_match" select="boolean($allow_list_issuer/DN[text() = $dn])"/>
 		<xsl:variable name="cn_match" select="boolean($allow_list_issuer/CN[text() = $cn])"/>
-		
-
 	
 		<xsl:variable name="result">
 			<xsl:choose>
@@ -205,9 +206,12 @@ Incoming URIs follow the format /dp/<config_id>/[optional:<serviceName>]/.../
 	
 	<!--  
 		Returns an identifier for a certificate's issuer, this is used to condense the many signer certificates
-		into a single id that can be referenced by the domain config.xml
+		into a single id that can be referenced by the ./config_id/config.xml
 		
-		This template can be beefed up depending on the requirements
+		This template can be improved depending on the requirements.
+		
+		The key to this function being secure is that the Service's Server Profile verifies that the signer DN is valid
+		before arriving at this point. 
 		
 		Example: 'verisign' or 'self-signed'
 	 -->
