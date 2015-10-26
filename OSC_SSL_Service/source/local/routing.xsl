@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!-- 
 
-Incoming URIs follow the format /dp/<config_id>/[optional:<serviceName>]/.../
+	Routes the request to the appropriate endpoint for a matching URI from the config.xml file. 
 
  -->
 <xsl:stylesheet version="1.0"
@@ -47,14 +47,14 @@ Incoming URIs follow the format /dp/<config_id>/[optional:<serviceName>]/.../
 				<dp:xset-target host="$generic_endpoint/hostname" port="$generic_endpoint/port" ssl="false()" sslid=""/>
 			</xsl:when>
 			<xsl:otherwise>
-				<dp:reject>No routing information for the request was found.</dp:reject>
+				<dp:reject>No routing information for the URI '<xsl:value-of select="$req_uri"/>' or '<xsl:value-of select="$generic_uri"/>' was found.</dp:reject>
 			</xsl:otherwise>
 		</xsl:choose>
 	
 		<xsl:message dp:priority="debug">
 === SSL Service Routing 
 	Selected <xsl:choose><xsl:when test="$generic_endpoint">Generic</xsl:when><xsl:when test="$full_svc_endpoint">Service</xsl:when></xsl:choose> level routing. 
-    Routing to: <xsl:value-of select="dp:variable('var://service/routing-url')"/>
+	Routing to: <xsl:value-of select="dp:variable('var://service/URL-out')"/>
 ===
 		</xsl:message>
 	
