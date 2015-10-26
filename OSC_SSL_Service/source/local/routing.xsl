@@ -34,33 +34,30 @@ Incoming URIs follow the format /dp/<config_id>/[optional:<serviceName>]/.../
 		<xsl:variable name="config_file_path" select="concat('./',$req_config_id, '/config.xml')"/>
 		<xsl:variable name="config_file_xml" select="document($config_file_path)"/>
 		
-		<xsl:variable name="domainLevelURI" select="concat('/',$req_uri_components[1],'/', $req_uri_components[2])"/>
+		<xsl:variable name="generic_uri" select="concat('/',$req_uri_components[1],'/', $req_uri_components[2])"/>
 		
-		<xsl:variable name="domain_level_endpoint" select="$config_file_xml/Services/Service[(@URL = $domainLevelURI) and ((@env = $dp_env) or not(@env))]/endpoint"/>			
-		<xsl:if test="$domain_level_endpoint">
-			<dp:xset-target host="$domain_level_endpoint/hostname" port="$domain_level_endpoint/port" ssl="false()" sslid=""/>
-		</xsl:if>
-		
-		<xsl:variable name="svc_level_endpoint" select="$config_file_xml/Services/Service[(@URL = $req_uri) and ((@env = $dp_env) or not(@env))]/endpoint"/>
-		<xsl:if test="$svc_level_endpoint">
-			<dp:xset-target host="$svc_level_endpoint/hostname" port="$svc_level_endpoint/port" ssl="false()" sslid=""/>
-  		</xsl:if>
-	
+		<xsl:variable name="generic_endpoint" select="$config_file_xml/Services/Service[(@URL = $generic_uri) and ((@env = $dp_env) or not(@env))]/endpoint"/>			
+		<xsl:variable name="full_svc_endpoint" select="$config_file_xml/Services/Service[(@URL = $req_uri) and ((@env = $dp_env) or not(@env))]/endpoint"/>
+
 		<xsl:choose>
-			<xsl:when test="not($domain_level_endpoint) and not($svc_level_endpoint)">
-				<dp:reject>No routing information for the request was found.</dp:reject>
+			<xsl:when test="$full_svc_endpoint">
+				<dp:xset-target host="$full_svc_endpoint/hostname" port="$full_svc_endpoint/port" ssl="false()" sslid=""/>
 			</xsl:when>
+			<xsl:when test="$generic_endpoint">
+				<dp:xset-target host="$generic_endpoint/hostname" port="$generic_endpoint/port" ssl="false()" sslid=""/>
+			</xsl:when>
+			<xsl:otherwise>
+				<dp:reject>No routing information for the request was found.</dp:reject>
+			</xsl:otherwise>
 		</xsl:choose>
 	
 		<xsl:message dp:priority="debug">
-		=== SSL Service Routing 
-			Selected <xsl:choose><xsl:when test="$domain_level_endpoint">Domain</xsl:when><xsl:when test="$svc_level_endpoint">Service</xsl:when></xsl:choose> level routing. 
-    	    Routing to: <xsl:value-of select="dp:variable('var://service/routing-url')"/>
-    	===
+=== SSL Service Routing 
+	Selected <xsl:choose><xsl:when test="$generic_endpoint">Generic</xsl:when><xsl:when test="$full_svc_endpoint">Service</xsl:when></xsl:choose> level routing. 
+    Routing to: <xsl:value-of select="dp:variable('var://service/routing-url')"/>
+===
 		</xsl:message>
 	
 	</xsl:template>
-	
-	
 	
 </xsl:stylesheet>

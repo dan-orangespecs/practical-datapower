@@ -1,5 +1,5 @@
 <Services>
-  <Service env="DEV" URL="/dp/OSC_PD_SSLService">
+  <Service env="DEV" URL="/dp/OSC_PD_SSLService/echo">
     <allow issuer="self-signed">
       <DN>/C=CA/ST=Ontario/L=Toronto/O=Orange Specs Incorporated/OU=Consulting/CN=client-1</DN>
     </allow>
