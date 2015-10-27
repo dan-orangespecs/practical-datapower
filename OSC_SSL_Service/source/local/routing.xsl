@@ -26,7 +26,6 @@
 		<xsl:variable name="req_uri" select="dp:variable('var://service/URI')"/>
 		<xsl:variable name="req_uri_components" select="str:tokenize($req_uri,'/')"/>
 		<xsl:variable name="req_config_id" select="$req_uri_components[2]"/>
-		<xsl:variable name="req_service" select="$req_uri_components[3]"/>
 		
 		<xsl:variable name="config_file_path" select="concat('./',$req_config_id, '/config.xml')"/>
 		<xsl:variable name="config_file_xml" select="document($config_file_path)"/>

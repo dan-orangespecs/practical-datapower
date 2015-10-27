@@ -1,19 +1,11 @@
 <container xmlns:dp="http://www.datapower.com/schemas/management"
 	xmlns:env="http://schemas.xmlsoap.org/soap/envelope/">
-	<mapped-credentials type="none" au-success="true">
-		<entry type="custom" url="store:///identity.xsl">
-			<identity>
-				<entry type="client-ssl">
-					<dn />
-					<issuer />
-					<serial>*No certificate provided*</serial>
-				</entry>
-			</identity>
-		</entry>
+	<mapped-credentials type="none" au-success="false">
+		<entry type="token"/>
 	</mapped-credentials>
 	<mapped-resource type="none">
 		<resource>
-			<item type="original-url">/</item>
+			<item type="original-url">/dp/EchoService/echo</item>
 		</resource>
 	</mapped-resource>
 	<identity>

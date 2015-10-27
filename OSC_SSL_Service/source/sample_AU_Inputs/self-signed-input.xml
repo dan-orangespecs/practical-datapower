@@ -1,19 +1,11 @@
 <container xmlns:dp="http://www.datapower.com/schemas/management"
 	xmlns:env="http://schemas.xmlsoap.org/soap/envelope/">
-	<mapped-credentials type="none" au-success="true">
-		<entry type="custom" url="store:///identity.xsl">
-			<identity>
-				<entry type="client-ssl">
-					<dn>/C=CA/ST=Ontario/L=Toronto/O=Orange Specs Incorporated/OU=Consulting/CN=client-1</dn>
-					<issuer>/C=CA/ST=Ontario/L=Toronto/O=Orange Specs Incorporated/OU=Consulting/CN=client-1</issuer>
-					<serial>18038677030814884222</serial>
-				</entry>
-			</identity>
-		</entry>
+	<mapped-credentials type="none" au-success="false">
+		<entry type="token"/>
 	</mapped-credentials>
 	<mapped-resource type="none">
 		<resource>
-			<item type="original-url">/dp/TestDomain/someservice</item>
+			<item type="original-url">/dp/EchoService/echo</item>
 		</resource>
 	</mapped-resource>
 	<identity>

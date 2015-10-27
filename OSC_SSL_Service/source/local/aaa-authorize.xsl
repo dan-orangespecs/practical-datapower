@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!-- 
 
-Incoming URIs follow the format /dp/<config_id>/[optional:<serviceName>]/.../
+Incoming URIs follow the format /dp/<config_id>/....
 
  -->
 <xsl:stylesheet version="1.0"
@@ -29,7 +29,6 @@ Incoming URIs follow the format /dp/<config_id>/[optional:<serviceName>]/.../
 		<xsl:variable name="req_uri" select="/container/mapped-resource/resource/item[@type = 'original-url']/text()"/>
 		<xsl:variable name="req_uri_components" select="str:tokenize($req_uri,'/')"/>
 		<xsl:variable name="req_config_id" select="$req_uri_components[2]"/>
-		<xsl:variable name="req_service" select="$req_uri_components[3]"/>
 		
 		<xsl:variable name="config_file_path" select="concat('./',$req_config_id, '/config.xml')"/>
 		<xsl:variable name="config_file_xml" select="document($config_file_path)"/>
@@ -59,7 +58,6 @@ Incoming URIs follow the format /dp/<config_id>/[optional:<serviceName>]/.../
 	ENV                : <xsl:value-of select="$dp_env"/>
 	URI                : <xsl:value-of select="$req_uri"/>
 	Config ID          : <xsl:value-of select="$req_config_id"/>
-	Service            : <xsl:value-of select="$req_service"/>
 	Config File        : <xsl:value-of select="$config_file_path"/>
 	DN                 : <xsl:value-of select="$client_dn"/>
 	CN                 : <xsl:value-of select="$client_cn"/>
@@ -137,17 +135,16 @@ Incoming URIs follow the format /dp/<config_id>/[optional:<serviceName>]/.../
 				
 				<xsl:message dp:priority="error">
 === SSL Service - Rejected Transaction
-	code        : <xsl:value-of select="$statusCode"/>
-	message     : <xsl:value-of select="$statusMessage"/>
-	uri         : <xsl:value-of select="$req_uri"/>
-	configID    : <xsl:value-of select="$req_config_id"/>
-	service     : <xsl:value-of select="$req_service"/>
-	configPath  : <xsl:value-of select="$config_file_path"/>
-	clientDN    : <xsl:value-of select="$client_dn"/>
-	clientCN    : <xsl:value-of select="$client_cn"/>
-	issuerDN    : <xsl:value-of select="$client_issuer_dn"/>
-	issuerID    : <xsl:value-of select="$client_issuer_id"/>
-	tid         : <xsl:value-of select="$tid"/>
+	Code        : <xsl:value-of select="$statusCode"/>
+	Message     : <xsl:value-of select="$statusMessage"/>
+	URI         : <xsl:value-of select="$req_uri"/>
+	ConfigID    : <xsl:value-of select="$req_config_id"/>
+	ConfigPath  : <xsl:value-of select="$config_file_path"/>
+	ClientDN    : <xsl:value-of select="$client_dn"/>
+	ClientCN    : <xsl:value-of select="$client_cn"/>
+	IssuerDN    : <xsl:value-of select="$client_issuer_dn"/>
+	IssuerID    : <xsl:value-of select="$client_issuer_id"/>
+	TID         : <xsl:value-of select="$tid"/>
 ===
 				</xsl:message>
 			</xsl:when>	
@@ -194,10 +191,11 @@ Incoming URIs follow the format /dp/<config_id>/[optional:<serviceName>]/.../
 		<xsl:message dp:priority="debug">
 === SSL Service - getMatchStatusCode
 	TID        : <xsl:value-of select="$tid"/>
-	ENV        : <xsl:value-of select="$dp_env"/>
+	Env        : <xsl:value-of select="$dp_env"/>
 	URI        : <xsl:value-of select="$uri"/>
 	DN         : <xsl:value-of select="$dn"/>
 	CN         : <xsl:value-of select="$cn"/>
+	Issuer Id  : <xsl:value-of select="$issuer_id"/>
 	Code	   : <xsl:copy-of select="$result"/>
 ===
 		</xsl:message>
@@ -205,15 +203,14 @@ Incoming URIs follow the format /dp/<config_id>/[optional:<serviceName>]/.../
 	</xsl:template>
 	
 	<!--  
-		Returns an identifier for a certificate's issuer, this is used to condense the many signer certificates
-		into a single id that can be referenced by the ./config_id/config.xml
+		Returns an identifier for a certificate's issuer, this is used to condense the many 
+		intermediate signer certificates into a single id that can be referenced by the ./config_id/config.xml
+		while allowing each organization to determine how thorough the check is (1:1 or n:1). 
 		
-		This template can be improved depending on the requirements.
-		
-		The key to this function being secure is that the Service's Server Profile verifies that the signer DN is valid
+		The key to security is that the TLS Server Profile verifies that the signer DN is valid
 		before arriving at this point. 
 		
-		Example: 'verisign' or 'self-signed'
+		Example: 'verisign', 'orangespecs' or 'self-signed'
 	 -->
 	
 	<xsl:template name="getIssuerIdentifier">
@@ -222,6 +219,7 @@ Incoming URIs follow the format /dp/<config_id>/[optional:<serviceName>]/.../
 		
 		<xsl:choose>
 			<xsl:when test="contains($issuer_dn,'VeriSign')">verisign</xsl:when>
+			<xsl:when test="contains($issuer_dn, 'Orange Specs Incorporated SSL Test Intermediate CA')">orangespecs</xsl:when>
 			<xsl:when test="string-length($issuer_dn) > 0 and  $issuer_dn = $dn">self-signed</xsl:when>
 			<xsl:otherwise>unknown</xsl:otherwise>
 		</xsl:choose>
