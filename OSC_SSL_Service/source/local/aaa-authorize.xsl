@@ -93,15 +93,17 @@ Incoming URIs follow the format /dp/<config_id>/....
 			</xsl:call-template>	
 		</xsl:variable>
 		
+		<!--  Only look atthe generic URL code if the specific URL doesn't exist (code 404.1) -->
+		
 		<xsl:variable name="statusCode">
 			<xsl:choose>
 				<xsl:when test="string-length($client_dn) = 0">400</xsl:when>
 				<xsl:when test="(count($req_uri_components) &lt; 2) or not($req_uri_components[1] = 'dp')">400.1</xsl:when>
 				<xsl:when test="not($config_file_xml)">500</xsl:when>
-				<xsl:when test="$fullURIStatusCode = 200   or $genericURIStatusCode = 200">200</xsl:when>
-				<xsl:when test="$fullURIStatusCode = 403   or $genericURIStatusCode = 403">403</xsl:when>
-				<xsl:when test="$fullURIStatusCode = 404.3 or $genericURIStatusCode = 404.3">404.3</xsl:when>
-				<xsl:when test="$fullURIStatusCode = 404.2 or $genericURIStatusCode = 404.2">404.2</xsl:when>
+				<xsl:when test="$fullURIStatusCode = 200   or ($fullURIStatusCode = 404.1 and $genericURIStatusCode = 200)">200</xsl:when>
+				<xsl:when test="$fullURIStatusCode = 403   or ($fullURIStatusCode = 404.1 and $genericURIStatusCode = 403)">403</xsl:when>
+				<xsl:when test="$fullURIStatusCode = 404.3 or ($fullURIStatusCode = 404.1 and $genericURIStatusCode = 404.3)">404.3</xsl:when>
+				<xsl:when test="$fullURIStatusCode = 404.2 or ($fullURIStatusCode = 404.1 and $genericURIStatusCode = 404.2)">404.2</xsl:when>
    				<xsl:when test="$fullURIStatusCode = 404.1 or $genericURIStatusCode = 404.1">404.1</xsl:when>
 				<xsl:otherwise>500</xsl:otherwise>
 			</xsl:choose>
