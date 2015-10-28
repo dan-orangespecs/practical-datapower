@@ -112,14 +112,14 @@ Incoming URIs follow the format /dp/<config_id>/....
 		<xsl:variable name="statusMessage">
 			<xsl:choose>
 				<xsl:when test="$statusCode = 500">DataPower configuration file '<xsl:value-of select="$config_file_path"/>' not found.</xsl:when>
-				<xsl:when test="$statusCode = 400">Client did not present a certificate</xsl:when>
-				<xsl:when test="$statusCode = 400.1">Client's request URI '<xsl:value-of select="$req_uri"/>' does not follow platform standard of '/dp/*'</xsl:when>
-				<xsl:when test="$statusCode = 404.1">No configuration found for URI '<xsl:value-of select="$req_uri"/>' or '<xsl:value-of select="$generic_config_uri"/>' found in configuration file '<xsl:value-of select="$config_file_path"/>'</xsl:when>
-				<xsl:when test="$statusCode = 404.2">No '<xsl:value-of select="$dp_env"/>' environment defined for URI '<xsl:value-of select="$req_uri"/>' in configuration file '<xsl:value-of select="$config_file_path"/>'</xsl:when>
-				<xsl:when test="$statusCode = 404.3">No Match for certificate signer '<xsl:value-of select="$client_issuer_id"/>' in '<xsl:value-of select="$dp_env"/>' environment for URI '<xsl:value-of select="$req_uri"/>' in configuration file '<xsl:value-of select="$config_file_path"/>'  </xsl:when>
-				<xsl:when test="$statusCode = 403">No match for client certificate '<xsl:value-of select="$client_dn"/>' issued by '<xsl:value-of select="$client_issuer_id"/>' in '<xsl:value-of select="$dp_env"/>' environment for URI '<xsl:value-of select="$req_uri"/>' in configuration file '<xsl:value-of select="$config_file_path"/>'</xsl:when>
+				<xsl:when test="$statusCode = 400">Client did not present a certificate.</xsl:when>
+				<xsl:when test="$statusCode = 400.1">Client's request URI '<xsl:value-of select="$req_uri"/>' does not follow platform standard of '/dp/*'.</xsl:when>
+				<xsl:when test="$statusCode = 404.1">No configuration found for URI '<xsl:value-of select="$req_uri"/>' or '<xsl:value-of select="$generic_config_uri"/>' found in configuration file '<xsl:value-of select="$config_file_path"/>'.</xsl:when>
+				<xsl:when test="$statusCode = 404.2">No '<xsl:value-of select="$dp_env"/>' environment defined for URI '<xsl:value-of select="$req_uri"/>' in configuration file '<xsl:value-of select="$config_file_path"/>'.</xsl:when>
+				<xsl:when test="$statusCode = 404.3">No Match for certificate signer '<xsl:value-of select="$client_issuer_id"/>' in '<xsl:value-of select="$dp_env"/>' environment for URI '<xsl:value-of select="$req_uri"/>' in configuration file '<xsl:value-of select="$config_file_path"/>'.</xsl:when>
+				<xsl:when test="$statusCode = 403">No match for client certificate '<xsl:value-of select="$client_dn"/>' issued by '<xsl:value-of select="$client_issuer_id"/>' in '<xsl:value-of select="$dp_env"/>' environment for URI '<xsl:value-of select="$req_uri"/>' in configuration file '<xsl:value-of select="$config_file_path"/>'.</xsl:when>
 				<xsl:when test="$statusCode = 200">Transaction Authorized</xsl:when>
-				<xsl:otherwise>Unknown Error</xsl:otherwise>
+				<xsl:otherwise>Unknown Error.</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
 		

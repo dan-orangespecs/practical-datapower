@@ -32,18 +32,18 @@
 		
 		<xsl:variable name="generic_uri" select="concat('/',$req_uri_components[1],'/', $req_uri_components[2])"/>
 		
-		<xsl:variable name="generic_endpoint" select="$config_file_xml/Services/Service[(@URL = $generic_uri) and ((@env = $dp_env) or not(@env))]/endpoint"/>			
-		<xsl:variable name="full_svc_endpoint" select="$config_file_xml/Services/Service[(@URL = $req_uri) and ((@env = $dp_env) or not(@env))]/endpoint"/>
+		<xsl:variable name="generic_endpoint" select="$config_file_xml/Services/Service[(@URL = $generic_uri) and ((@env = $dp_env) or not(@env))]"/>			
+		<xsl:variable name="full_svc_endpoint" select="$config_file_xml/Services/Service[(@URL = $req_uri) and ((@env = $dp_env) or not(@env))]"/>
 
 		<xsl:choose>
-			<xsl:when test="$full_svc_endpoint">
-				<dp:xset-target host="$full_svc_endpoint/hostname" port="$full_svc_endpoint/port" ssl="false()" sslid=""/>
+			<xsl:when test="$full_svc_endpoint/endpoint">
+				<dp:xset-target host="$full_svc_endpoint/endpoint/hostname" port="$full_svc_endpoint/endpoint/port" ssl="false()" sslid=""/>
 			</xsl:when>
-			<xsl:when test="$generic_endpoint">
-				<dp:xset-target host="$generic_endpoint/hostname" port="$generic_endpoint/port" ssl="false()" sslid=""/>
+			<xsl:when test="not($full_svc_endpoint) and $generic_endpoint/endpoint">
+				<dp:xset-target host="$generic_endpoint/endpoint/hostname" port="$generic_endpoint/endpoint/port" ssl="false()" sslid=""/>
 			</xsl:when>
 			<xsl:otherwise>
-				<dp:reject>No routing information for the URI '<xsl:value-of select="$req_uri"/>' or '<xsl:value-of select="$generic_uri"/>' was found.</dp:reject>
+				<dp:reject>No routing information for the URI '<xsl:value-of select="$req_uri"/>' was found.</dp:reject>
 			</xsl:otherwise>
 		</xsl:choose>
 	

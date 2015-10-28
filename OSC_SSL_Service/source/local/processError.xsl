@@ -23,13 +23,14 @@
 	<xsl:include href="./environment.xsl"/>
 
     <xsl:variable name="orig_content_type" select="dp:variable('var://service/original-content-type')"/>
+    
 	<xsl:variable name="dp_env">
 		<xsl:call-template name="getCurrentEnvironment"/>
 	</xsl:variable>	
 	
 	<xsl:variable name="error_msg">
 		<xsl:choose>
-			<xsl:when test="not($dp_env = 'PROD') and dp:variable('var://service/error-subcode') = '0x01d30002'"><xsl:value-of select="dp:variable('var://service/error-message')"/> [<xsl:value-of select="dp:variable('var://service/error-code')"/>-<xsl:value-of select="dp:variable('var://service/error-subcode')"/>]</xsl:when>
+			<xsl:when test="not($dp_env = 'PROD') and (dp:variable('var://service/error-subcode') = '0x01d30002' or dp:variable('var://service/error-subcode') ='0x01d30001')"><xsl:value-of select="dp:variable('var://service/error-message')"/> [<xsl:value-of select="dp:variable('var://service/error-code')"/>-<xsl:value-of select="dp:variable('var://service/error-subcode')"/>]</xsl:when>
 			<xsl:when test="not($dp_env = 'PROD')">Error connecting to URL '<xsl:value-of select="dp:variable('var://service/URL-out')"/>: '<xsl:value-of select="dp:variable('var://service/error-message') "/>' [<xsl:value-of select="dp:variable('var://service/error-code')"/>-<xsl:value-of select="dp:variable('var://service/error-subcode')"/>]</xsl:when>
 			<xsl:otherwise>This request could not be completed.</xsl:otherwise>
 		</xsl:choose>
