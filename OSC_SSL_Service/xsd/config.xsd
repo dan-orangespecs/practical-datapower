@@ -1,0 +1,33 @@
+<xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="services">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="service" maxOccurs="unbounded" minOccurs="0">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="allow" maxOccurs="unbounded" minOccurs="0">
+                <xs:complexType>
+                  <xs:choice minOccurs="0" maxOccurs="unbounded">
+                    <xs:element type="xs:string" name="dn"/>
+                    <xs:element type="xs:string" name="cn"/>
+                  </xs:choice>
+                  <xs:attribute type="xs:string" name="issuer" use="optional"/>
+                </xs:complexType>
+              </xs:element>
+              <xs:element name="endpoint" maxOccurs="1" minOccurs="0">
+                <xs:complexType>
+                  <xs:sequence minOccurs="1" maxOccurs="1">
+                    <xs:element type="xs:string" name="hostname"/>
+                    <xs:element type="xs:short" name="port"/>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+            <xs:attribute type="xs:string" name="env" use="optional"/>
+            <xs:attribute type="xs:string" name="url" use="required"/>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

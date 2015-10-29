@@ -168,14 +168,14 @@ Incoming URIs follow the format /dp/<config_id>/....
 		<xsl:param name="issuer_id"/>
 		<xsl:param name="tid"/>
 		
-		<xsl:variable name="svc_config" select="$config_xml/Services/Service[(@URL = $uri)]"/>
+		<xsl:variable name="svc_config" select="$config_xml/Services/Service[(@url = $uri)]"/>
 		<xsl:variable name="svc_config_env" select="$svc_config[((@env = $env) or not(@env))]"/>
 		<xsl:variable name="allow_list" select="$svc_config_env/allow"/>		
 		
 		<xsl:variable name="allow_list_issuer" select="$allow_list[not(@issuer) or (@issuer and translate(@issuer, $uppercase, $lowercase) = $issuer_id)]"/>
 		
-		<xsl:variable name="dn_match" select="boolean($allow_list_issuer/DN[text() = $dn])"/>
-		<xsl:variable name="cn_match" select="boolean($allow_list_issuer/CN[text() = $cn])"/>
+		<xsl:variable name="dn_match" select="boolean($allow_list_issuer/dn[text() = $dn])"/>
+		<xsl:variable name="cn_match" select="boolean($allow_list_issuer/cn[text() = $cn])"/>
 	
 		<xsl:variable name="result">
 			<xsl:choose>

@@ -1,23 +1,23 @@
-<Services>
-  <Service env="DEV" URL="/dp/EchoService/echo">
+<services>
+  <service env="DEV" url="/dp/EchoService/echo">
     <allow issuer="self-signed">
-      <DN>/C=CA/ST=Ontario/L=Toronto/O=Orange Specs Incorporated/OU=Consulting/CN=client-1.ssltest.orangespecs.com</DN>
+      <dn>/C=CA/ST=Ontario/L=Toronto/O=Orange Specs Incorporated/OU=Consulting/CN=client-1.ssltest.orangespecs.com</dn>
     </allow>
     <allow issuer="orangespecs">
-      <CN>client-4.ssltest.orangespecs.com</CN>
+      <cn>client-4.ssltest.orangespecs.com</cn>
     </allow>
     <endpoint>
       <hostname>localhost</hostname>
       <port>8888</port>
     </endpoint>
-  </Service>
-  <Service env="DEV" URL="/dp/EchoService">
+  </service>
+  <service env="DEV" url="/dp/EchoService">
     <allow issuer="self-signed">
-      <CN>client-2.ssltest.orangespecs.com</CN>
+      <cn>client-2.ssltest.orangespecs.com</cn>
     </allow>
     <endpoint>
       <hostname>localhost</hostname>
       <port>8888</port>
     </endpoint>
-  </Service>
-</Services>
+  </service>
+</services>
