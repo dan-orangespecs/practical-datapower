@@ -32,8 +32,8 @@
 		
 		<xsl:variable name="generic_uri" select="concat('/',$req_uri_components[1],'/', $req_uri_components[2])"/>
 		
-		<xsl:variable name="generic_endpoint" select="$config_file_xml/Services/Service[(@url = $generic_uri) and ((@env = $dp_env) or not(@env))]"/>			
-		<xsl:variable name="full_svc_endpoint" select="$config_file_xml/Services/Service[(@url = $req_uri) and ((@env = $dp_env) or not(@env))]"/>
+		<xsl:variable name="generic_endpoint" select="$config_file_xml/services/service[(@url = $generic_uri) and ((@env = $dp_env) or not(@env))]"/>			
+		<xsl:variable name="full_svc_endpoint" select="$config_file_xml/services/service[(@url = $req_uri) and ((@env = $dp_env) or not(@env))]"/>
 
 		<xsl:choose>
 			<xsl:when test="$full_svc_endpoint/endpoint">

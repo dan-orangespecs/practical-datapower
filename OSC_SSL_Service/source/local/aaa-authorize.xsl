@@ -168,7 +168,7 @@ Incoming URIs follow the format /dp/<config_id>/....
 		<xsl:param name="issuer_id"/>
 		<xsl:param name="tid"/>
 		
-		<xsl:variable name="svc_config" select="$config_xml/Services/Service[(@url = $uri)]"/>
+		<xsl:variable name="svc_config" select="$config_xml/services/service[(@url = $uri)]"/>
 		<xsl:variable name="svc_config_env" select="$svc_config[((@env = $env) or not(@env))]"/>
 		<xsl:variable name="allow_list" select="$svc_config_env/allow"/>		
 		
