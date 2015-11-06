@@ -54,6 +54,17 @@ Tests are provided as a JSON file that can be imported into DHC ( https://dhc.re
 
 https://github.com/dan-orangespecs/practical-datapower/blob/master/OSC_PD_Stub/tests/DHC-OSC-PD-Stub-Tests.json
 
+## IBM DataPower Gatway Echo Service
+
+This is a very simple and straightforward service that does nothing more than echo a request message into 
+a response. It can be used as a temporary destination backend service for the above SSL Service. 
+
+### Installation
+
+A domain export of the service can be found in the export folder. The Domain is named 'OSC_PD_Echo'.
+
+https://github.com/dan-orangespecs/practical-datapower/raw/master/OSC_PD_Echo/export/OSC_PD_ECHO.zip
+
 
 
 
